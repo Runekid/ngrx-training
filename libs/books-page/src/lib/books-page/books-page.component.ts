@@ -35,7 +35,7 @@ export class BooksPageComponent implements OnInit {
       this.books = books;
       this.updateTotals(books);
 
-      this.store.dispatch(BooksApiActions.booksLoaded())
+      this.store.dispatch(BooksApiActions.booksLoaded({books: books}))
     });
   }
 

@@ -10,3 +10,53 @@ const updateBook = (books: BookModel[], changes: BookModel) =>
   });
 const deleteBook = (books: BookModel[], bookId: string) =>
   books.filter((book) => bookId !== book.id);
+
+export interface State {
+  collection: BookModel[],
+  activeBookId: string | null
+}
+
+export const initialState: State = {
+  collection: [],
+  activeBookId: null
+};
+
+export const reducer = createReducer(
+  initialState,
+  on(BooksPageActions.enter, BooksPageActions.clearSelectedBook, (state) => {
+    return {
+      ...state,
+      activeBookid: null
+    }
+  }),
+  on(BooksPageActions.selectBook, (state, action) => {
+    return {
+      ...state,
+      activeBookId: action.bookId
+    }
+  }),
+  on(BooksApiActions.booksLoaded, (state, action) => {
+    return {
+      ...state,
+      collection: action.books
+    }
+  }),
+  on(BooksApiActions.bookCreated, (state, action) => {
+    return {
+      collection: createBook(state.collection, action.book),
+      activeBookId: null
+    }
+  }),
+  on(BooksApiActions.bookUpdated, (state, action) => {
+    return {
+      collection: updateBook(state.collection, action.book),
+      activeBookId: null
+    }
+  }),
+  on(BooksApiActions.bookDeleted, (state, action) => {
+    return {
+      ...state,
+      collection: deleteBook(state.collection, action.bookId),
+    }
+  })
+) 
