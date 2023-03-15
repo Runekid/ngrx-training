@@ -39,3 +39,24 @@ export const selectSharedBooksState = createFeatureSelector<State>(FEATURE_KEY);
 /**
  * Books Selectors
  */
+
+export const selectBooksState = createSelector(
+  selectSharedBooksState,
+  (sharedBooksFeatureState) => sharedBooksFeatureState.books
+);
+
+export const selectAllBooks = createSelector(
+  selectBooksState,
+  fromBooks.selectAll
+);
+
+export const selectActiveBook = createSelector(
+  selectBooksState,
+  fromBooks.selectActiveBook
+);
+
+export const selectBookEarningsTotal = createSelector(
+  selectBooksState,
+  fromBooks.selectTotalEarnings
+);
+

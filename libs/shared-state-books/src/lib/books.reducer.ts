@@ -59,4 +59,32 @@ export const reducer = createReducer(
       collection: deleteBook(state.collection, action.bookId),
     }
   })
-) 
+);
+
+export const selectAll = (state: State) => state.collection;
+export const selectActiveBookId = (state:State) => state.activeBookId;
+
+export const selectActiveBook_bad_performance = (state: State) => {
+  const books = selectAll(state);
+  const activeBookId = selectActiveBookId(state);
+  return books.find(book => book.id === activeBookId) || null;
+};
+
+export const selectActiveBook = createSelector(
+  selectAll,
+  selectActiveBookId,
+  (books, activeBookId) => books.find(book => book.id === activeBookId) || null
+); // only changes when one of its subselectors change == memoization
+
+export const selectTotalEarnings_bad_performance = (state: State) => {
+  const books = selectAll(state);
+
+  return calculateBooksGrossEarnings(books);
+};
+
+export const selectTotalEarnings = createSelector(
+  selectAll,
+  calculateBooksGrossEarnings
+);
+
+
