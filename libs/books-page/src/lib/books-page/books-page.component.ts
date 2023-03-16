@@ -21,23 +21,16 @@ export class BooksPageComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   total$: Observable<number>;
 
-  constructor(private booksService: BooksService, private store: Store) {
+  constructor(private store: Store) {
     this.books$ = this.store.select(selectAllBooks);
     this.currentBook$ = this.store.select(selectActiveBook);
     this.total$ = this.store.select(selectBookEarningsTotal);
   }
 
   ngOnInit() {
-    this.getBooks();
     this.removeSelectedBook();
 
     this.store.dispatch(BooksPageActions.enter());
-  }
-
-  getBooks() {
-    this.booksService.all().subscribe((books) => {
-      this.store.dispatch(BooksApiActions.booksLoaded({books: books}))
-    });
   }
 
   onSelect(book: BookModel) {
@@ -66,13 +59,6 @@ export class BooksPageComponent implements OnInit {
     this.store.dispatch(BooksPageActions.createBook({
       book: bookProps
     }));
-
-    this.booksService.create(bookProps).subscribe((book) => {
-      this.getBooks();
-      this.removeSelectedBook();
-
-      this.store.dispatch(BooksApiActions.bookCreated({book: book}));
-    });
   }
 
   updateBook(book: BookModel) {
@@ -80,25 +66,11 @@ export class BooksPageComponent implements OnInit {
       bookId: book.id,
       changes: book
     }));
-
-    this.booksService.update(book.id, book).subscribe((book) => {
-      this.getBooks();
-      this.removeSelectedBook();
-
-      this.store.dispatch(BooksApiActions.bookUpdated({book: book}))
-    });
   }
 
   onDelete(book: BookModel) {
     this.store.dispatch(BooksPageActions.deleteBook({
       bookId: book.id
     }));
-
-    this.booksService.delete(book.id).subscribe(() => {
-      this.getBooks();
-      this.removeSelectedBook();
-
-      this.store.dispatch(BooksApiActions.bookDeleted({bookId: book.id}))
-    });
   }
 }
